@@ -1,0 +1,770 @@
+﻿/*
+
+-----------------------------------------------------------------------------------------------------------------------------------
+Guidelines
+-----------------------------------------------------------------------------------------------------------------------------------
+
+The provided document is a guide for the project. Follow the instructions and take the necessary steps to finish
+the project in the SQL file			
+-----------------------------------------------------------------------------------------------------------------------------------
+
+											Database Creation
+
+-----------------------------------------------------------------------------------------------------------------------------------
+*/
+
+-- [1] To begin with the project, you need to create the database first
+-- Write the Query below to create a Database
+DROP DATABASE IF EXISTS VEHdb;
+CREATE DATABASE VEHdb;
+USE vehdb;
+
+
+CREATE TABLE vehdb_t (
+	shipper_id INTEGER,
+	shipper_name VARCHAR(50),
+	shipper_contact_details VARCHAR(30),
+	product_id INTEGER,
+	vehicle_maker VARCHAR(60),
+	vehicle_model VARCHAR(60),
+	vehicle_color VARCHAR(60),
+	vehicle_model_year INTEGER,
+	vehicle_price DECIMAL(14,2),
+	quantity INTEGER,
+	discount DECIMAL(4,2),
+	customer_id VARCHAR(25),
+	customer_name VARCHAR(25),
+	gender VARCHAR(15),
+	job_title VARCHAR(50),
+	phone_number VARCHAR(20),
+	email_address VARCHAR(50),
+	city VARCHAR(25),
+	country VARCHAR(40),
+	state VARCHAR(40),
+	customer_address VARCHAR(50),
+	order_date DATE,
+	order_id VARCHAR(25),
+	ship_date DATE,
+	ship_mode VARCHAR(25),
+	shipping VARCHAR(30),
+	postal_code INTEGER,
+	credit_card_type VARCHAR(40),
+	credit_card_number BIGINT,
+	customer_feedback VARCHAR(20),
+	quarter_number INTEGER,
+	PRIMARY KEY (shipper_id,product_id,customer_id,order_id)
+);
+
+-- [2] Now, after creating the database, you need to tell MYSQL which database is to be used.
+-- Write the Query below to call your Database
+
+
+/*-----------------------------------------------------------------------------------------------------------------------------------
+
+Tables Creation
+
+-----------------------------------------------------------------------------------------------------------------------------------*/
+
+-- [3] Creating the tables:
+
+/*Note:
+---> To create the table, refer to the ER diagram and the solution architecture. 
+---> Refer to the column names along with the data type while creating a table from the ER diagram.
+---> If needed revisit the videos Week 2: Data Modeling and Architecture: Creating DDLs for Your Main Dataset and Normalized Datasets
+---> While creating a table, make sure the column you assign as a primary key should uniquely identify each row.
+---> If needed revisit the codes used to create tables for the gl_eats database.
+This will help in getting a better understanding of table creation.*/
+
+-- Syntax to create table-
+
+-- To drop the table if already exists
+DROP TABLE IF EXISTS temp_t; -- Change the name of table_name to the name you have given.
+
+
+-- To create a table-
+CREATE TABLE temp_t (
+	shipper_id INTEGER,
+	shipper_name VARCHAR(50),
+	shipper_contact_details VARCHAR(30),
+	product_id INTEGER,
+	vehicle_maker VARCHAR(60),
+	vehicle_model VARCHAR(60),
+	vehicle_color VARCHAR(60),
+	vehicle_model_year INTEGER,
+	vehicle_price DECIMAL(14,2),
+	quantity INTEGER,
+	discount DECIMAL(4,2),
+	customer_id VARCHAR(25),
+	customer_name VARCHAR(25),
+	gender VARCHAR(15),
+	job_title VARCHAR(50),
+	phone_number VARCHAR(20),
+	email_address VARCHAR(50),
+	city VARCHAR(25),
+	country VARCHAR(40),
+	state VARCHAR(40),
+	customer_address VARCHAR(50),
+	order_date DATE,
+	order_id VARCHAR(25),
+	ship_date DATE,
+	ship_mode VARCHAR(25),
+	shipping VARCHAR(30),
+	postal_code INTEGER,
+	credit_card_type VARCHAR(40),
+	credit_card_number BIGINT,
+	customer_feedback VARCHAR(20),
+	quarter_number INTEGER,
+	PRIMARY KEY (shipper_id,product_id,customer_id,order_id)
+);
+
+DROP TABLE IF EXISTS order_t;
+CREATE TABLE order_t (
+	order_id VARCHAR(25) NOT NULL,
+customer_id VARCHAR(25),
+shipper_id INTEGER,
+product_id INTEGER,
+quantity INTEGER,
+vehicle_price DECIMAL(10,2),
+order_date DATE,
+	ship_date DATE,
+discount DECIMAL(4,2),
+	ship_mode VARCHAR(25),
+	shipping VARCHAR(30),
+customer_feedback VARCHAR(20),
+quarter_number INTEGER,
+PRIMARY KEY (order_id)
+);
+
+DROP TABLE IF EXISTS customer_t;
+CREATE TABLE customer_t (
+	customer_id VARCHAR(25) NOT NULL,
+customer_name VARCHAR(25),
+gender VARCHAR(15),
+job_title VARCHAR(50),
+phone_number VARCHAR(20),
+email_address VARCHAR(50),
+city VARCHAR(25),
+country VARCHAR(40),
+state VARCHAR(40),
+customer_address VARCHAR(50),
+postal_code INTEGER,
+credit_card_type VARCHAR(40),
+credit_card_number BIGINT,
+PRIMARY KEY (customer_id)
+);
+
+
+DROP TABLE IF EXISTS product_t;
+CREATE TABLE product_t (
+	product_id INTEGER,
+	vehicle_maker VARCHAR(60),
+	vehicle_model VARCHAR(60),
+	vehicle_color VARCHAR(60),
+	vehicle_model_year INTEGER,
+	vehicle_price DECIMAL(14,2),
+PRIMARY KEY(product_id)
+);
+
+DROP TABLE IF EXISTS shipper_t;
+CREATE TABLE shipper_t (
+	shipper_id INTEGER,
+shipper_name VARCHAR(50),
+shipper_contact_details VARCHAR(30),
+PRIMARY KEY(shipper_id)
+);
+/* List of tables to be created.
+
+Create a table temp_t, vehicles_t, order_t, customer_t, product_t, shipper_t */
+
+
+-- NB Vehicles table [No primary key for this table hence not created, all vehicle info is under the product table]-
+
+/*-----------------------------------------------------------------------------------------------------------------------------------
+
+Stored Procedures Creation
+
+-----------------------------------------------------------------------------------------------------------------------------------*/
+
+-- [4] Creating the Stored Procedures:
+
+/*Note:
+
+---> If needed revisit the video: Week 2: Data Modeling and Architecture: Introduction to Stored Procedures.
+---> Also revisit the codes used to create stored procedures for the gl_eats database.
+	 This will help in getting a better understanding of the creation of stored procedures.*/
+
+-- Syntax to create stored procedure for the database-
+DROP PROCEDURE IF EXISTS vehdb_p;   -- delete if procedure already exist
+DELIMITER $$
+CREATE PROCEDURE vehdb_p()    -- create procedure
+BEGIN
+	INSERT INTO vehdb.vehdb_t (
+		shipper_id,
+		shipper_name,
+		shipper_contact_details,
+		product_id,
+		vehicle_maker,
+		vehicle_model,
+		vehicle_color,
+		vehicle_model_year,
+		vehicle_price,
+		quantity,
+		discount,
+		customer_id,
+		customer_name,
+		gender,
+		job_title,
+		phone_number,
+		email_address,
+		city,
+		country,
+		state,
+		customer_address,
+		order_date,
+		order_id,
+		ship_date,
+		ship_mode,
+		shipping,
+		postal_code,
+		credit_card_type,
+		credit_card_number,
+		customer_feedback,
+		quarter_number
+) SELECT * FROM vehdb.temp_t;
+END;
+
+
+
+DROP PROCEDURE IF EXISTS customer_p;
+DELIMITER $$
+CREATE PROCEDURE customer_p()
+BEGIN
+	INSERT IGNORE INTO vehdb.customer_t (
+		customer_id,
+		customer_name,
+		gender,
+		job_title,
+		phone_number,
+		email_address,
+		city,
+		country,
+		state,
+		customer_address,
+		postal_code,
+		credit_card_type,
+		credit_card_number
+	)
+SELECT DISTINCT
+		customer_id,
+		customer_name,
+		gender,
+		job_title,
+		phone_number,
+		email_address,
+		city,
+		country,
+		state,
+		customer_address,
+		postal_code,
+		credit_card_type,
+		credit_card_number
+	FROM vehdb_t WHERE customer_id NOT IN (SELECT DISTINCT customer_id FROM customer_t);
+END;
+
+
+
+DROP PROCEDURE IF EXISTS product_p;
+DELIMITER $$
+CREATE PROCEDURE product_p()
+BEGIN
+	INSERT INTO vehdb.product_t (
+		product_id,
+		vehicle_maker,
+		vehicle_model,
+		vehicle_color,
+		vehicle_model_year,
+		vehicle_price
+)
+SELECT DISTINCT
+		product_id,
+		vehicle_maker,
+		vehicle_model,
+		vehicle_color,
+		vehicle_model_year,
+		vehicle_price
+	FROM vehdb_t WHERE product_id NOT IN (SELECT DISTINCT product_id FROM product_t);
+END;
+
+
+
+DROP PROCEDURE IF EXISTS order_p;
+DELIMITER $$
+CREATE PROCEDURE order_p(quarternum INTEGER)
+BEGIN
+	INSERT IGNORE INTO vehdb.order_t (
+		order_id,
+		customer_id,
+		shipper_id,
+		product_id,
+		quantity,
+		vehicle_price,
+		order_date,
+		ship_date,
+		discount,
+		ship_mode,
+		shipping,
+		customer_feedback,
+		quarter_number
+	)
+SELECT DISTINCT
+		order_id,
+		customer_id,
+		shipper_id,
+		product_id,
+		quantity,
+		vehicle_price,
+		order_date,
+		ship_date,
+		discount,
+		ship_mode,
+		shipping,
+		customer_feedback,
+		quarter_number
+	FROM vehdb_t WHERE quarter_number = quarternum;
+END;
+
+
+
+
+
+DROP PROCEDURE IF EXISTS shipper_p;
+DELIMITER $$
+CREATE PROCEDURE shipper_p()
+BEGIN
+	INSERT INTO vehdb.shipper_t (
+		shipper_id,
+		shipper_name,
+		shipper_contact_details
+	)
+SELECT DISTINCT
+		shipper_id,
+		shipper_name,
+		shipper_contact_details
+	FROM vehdb_t WHERE shipper_id NOT IN (SELECT DISTINCT shipper_id FROM shipper_t);
+END;
+/* List of stored procedures to be created.
+
+Creating the stored procedure for vehicles_p, order_p, customer_p, product_p, shipper_p*/
+
+/*-----------------------------------------------------------------------------------------------------------------------------------
+
+Data Ingestion
+
+-----------------------------------------------------------------------------------------------------------------------------------*/
+
+-- [5] Ingesting the data:
+-- Note: Revisit the video: Week-2: Data Modeling and Architecture: Ingesting data into the main table
+
+TRUNCATE temp_t;
+
+LOAD DATA LOCAL INFILE '/Users/reloef/Downloads/new_wheels_proj/Data/new_wheels_sales_qtr_4.csv' -- Change 1 up to 4 to append csv data for all quarters
+INTO TABLE temp_t
+FIELDS TERMINATED BY ','
+OPTIONALLY ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 LINES;
+
+call vehdb_p();
+call customer_p();
+call product_p();
+call shipper_p();
+call order_p(4);            -- Change 1 up to 4 to append csv data for all quarters
+
+/* Note:
+
+---> With the help of the above code, you can ingest the data into temp_t table by ingesting the quarterly data and by calling the stored 
+procedures you can ingest the data into separate table.
+---> You have to run the above ingestion code 4 times as 4 quarters of data are present and you also need to call all the stored procedures 
+4 times. Please change the argument value while calling the stored procedure order_p(n). (n = 1,2,3,4)
+---> If needed revisit the videos: Week 2: Data Modeling and Architecture: Ingesting data into the main table and Ingesting future weeks of data
+---> Also revisit the codes used to ingest the data for the gl_eats database. 
+This will help in getting a better understanding of how to ingest the data into various respective tables.*/
+
+
+/*-----------------------------------------------------------------------------------------------------------------------------------
+
+Views Creation
+
+-----------------------------------------------------------------------------------------------------------------------------------*/
+
+-- [6] Creating the views:
+
+/*Note:
+
+---> If needed revisit the videos: Week-2: Data Modeling and Architecture: Creating views for answers to business questions
+---> Also revisit the codes used to create views for the gl_eats database. 
+	 This will help in getting a better understanding of the creation of views.*/
+
+-- Syntax to create view-
+
+-- To drop the views if already exists-
+DROP VIEW IF EXISTS veh_prod_cust_v;
+
+-- To create a view-
+CREATE VIEW veh_prod_cust_v AS
+	SELECT
+		cust.customer_id,
+cust.customer_name,
+cust.credit_card_type,
+cust.state,
+ord.order_id,
+ord.customer_feedback,
+prod.product_id,
+prod.vehicle_maker,
+prod.vehicle_model,
+prod.vehicle_color,
+prod.vehicle_model_year
+	FROM order_t ord
+	INNER JOIN customer_t cust ON
+		ord.customer_id = cust.customer_id
+	INNER JOIN product_t prod ON
+		ord.product_id = prod.product_id;
+
+
+
+DROP VIEW IF EXISTS veh_ord_cust_v;
+CREATE VIEW veh_ord_cust_v AS
+	SELECT
+		cust.customer_id,
+cust.customer_name,
+cust.country,
+cust.city,
+cust.credit_card_type,
+		ord.order_id,
+ord.shipper_id,
+ord.product_id,
+		ord.quantity,
+ord.vehicle_price,
+		ord.order_date,
+ord.ship_date,
+ord.discount,
+ord.customer_feedback,
+ord.quarter_number
+	FROM customer_t cust
+		INNER JOIN order_t ord ON
+			cust.customer_id = ord.customer_id;
+
+-- List of views to be created are "veh_prod_cust_v" , "veh_ord_cust_v"
+
+
+/*-----------------------------------------------------------------------------------------------------------------------------------
+
+Functions Creation
+
+-----------------------------------------------------------------------------------------------------------------------------------*/
+
+-- [7] Creating the functions:
+
+
+
+/*Note:
+
+---> If needed revisit the videos: Week-2: Data Modeling and Architecture: Creating User Defined Functions
+---> Also revisit the codes used to create functions for the gl_eats database. 
+     This will help in getting a better understanding of the creation of functions.*/
+
+-- Create the function calc_revenue_f
+
+DROP FUNCTION IF EXISTS calc_revenue_f;
+
+DELIMITER $$
+CREATE FUNCTION calc_revenue_f(quantity INT, discount DEC, vehicle_price DEC)
+RETURNS DEC
+DETERMINISTIC
+BEGIN
+	DECLARE revenue DEC;
+	SET revenue = quantity * discount * vehicle_price;
+RETURN (revenue);
+END;
+
+SELECT          -- revenue by order_id
+	order_id,
+quantity,
+discount,
+vehicle_price,
+calc_revenue_f(quantity , discount , vehicle_price) revenue
+FROM veh_ord_cust_v;
+
+SELECT       -- sum revenue quartely
+	quarter_number,
+sum(calc_revenue_f(quantity , discount , vehicle_price)) revenue
+FROM veh_ord_cust_v
+GROUP BY 1;
+
+
+
+
+
+-- Create the function days_to_ship_f-
+DROP FUNCTION IF EXISTS days_to_ship_f;
+
+DELIMITER $$
+CREATE FUNCTION days_to_ship_f(ship_date DATE, order_date DATE)
+RETURNS INT
+DETERMINISTIC
+BEGIN
+	DECLARE duration INT;
+	SET duration = DATEDIFF(ship_date , order_date);
+RETURN (duration);
+END;
+
+SELECT
+	order_id,
+ship_date,
+order_date,
+days_to_ship_f(ship_date , order_date) duration
+FROM veh_ord_cust_v;
+
+
+
+
+/*-----------------------------------------------------------------------------------------------------------------------------------
+Note:
+After creating tables, stored procedures, views and functions, attempt the below questions.
+Once you have got the answer to the below questions, download the csv file for each question and use it in Python for visualisations.
+------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+Queries
+
+-----------------------------------------------------------------------------------------------------------------------------------*/
+
+/*-- QUESTIONS RELATED TO CUSTOMERS
+[Q1] What is the distribution of customers across states?
+Hint: For each state, count the number of customers.*/
+SELECT
+	state,
+COUNT(CUSTOMER_ID) AS NUMBER_OF_CUSTOMERS
+FROM
+	customer_t
+GROUP BY 1
+ORDER BY 2 DESC;
+
+
+-- ---------------------------------------------------------------------------------------------------------------------------------
+
+/* [Q2] What is the average rating in each quarter?
+-- Very Bad is 1, Bad is 2, Okay is 3, Good is 4, Very Good is 5.
+
+
+Hint: Use a common table expression and in that CTE, assign numbers to the different customer ratings. 
+      Now average the feedback for each quarter. 
+
+Note: For reference, refer to question number 10. Week-2: Hands-on (Practice)-GL_EATS_PRACTICE_EXERCISE_SOLUTION.SQL. 
+      You'll get an overview of how to use common table expressions from this question.*/
+
+WITH ratings as
+(
+	SELECT
+customer_id,
+order_id,
+quarter_number,
+		CASE
+			WHEN customer_feedback = 'very bad' THEN 1
+WHEN customer_feedback = 'bad' THEN 2
+WHEN customer_feedback = 'okay' THEN 3
+WHEN customer_feedback = 'good' THEN 4
+WHEN customer_feedback = 'very good' THEN 5
+		END AS rating_value
+	FROM veh_ord_cust_v
+)
+
+SELECT
+	quarter_number,
+AVG(rating_value) AS avg_rating
+FROM ratings
+GROUP BY 1;
+
+
+
+-- ---------------------------------------------------------------------------------------------------------------------------------
+
+/* [Q3] Are customers getting more dissatisfied over time?
+
+Hint: Need the percentage of different types of customer feedback in each quarter. Use a common table expression and
+	  determine the number of customer feedback in each category as well as the total number of customer feedback in each quarter.
+	  Now use that common table expression to find out the percentage of different types of customer feedback in each quarter.
+Eg: (total number of very good feedback/total customer feedback)* 100 gives you the percentage of very good feedback.
+
+Note: For reference, refer to question number 10. Week-2: Hands-on (Practice)-GL_EATS_PRACTICE_EXERCISE_SOLUTION.SQL.
+You'll get an overview of how to use common table expressions from this question*/
+
+
+WITH count_rates as
+(
+	SELECT
+customer_id,
+order_id,
+customer_feedback,
+quarter_number,
+		CASE
+			WHEN customer_feedback = 'very bad' THEN 1
+WHEN customer_feedback = 'bad' THEN 2
+WHEN customer_feedback = 'okay' THEN 3
+WHEN customer_feedback = 'good' THEN 4
+WHEN customer_feedback = 'very good' THEN 5
+		END AS rating_value
+	FROM veh_ord_cust_v
+)
+SELECT
+	quarter_number,
+	count(rating_value) total_counts,
+COUNT( CASE WHEN customer_feedback = 'very good' THEN rating_value END) * 100/count(rating_value) AS very_good,
+COUNT( CASE WHEN customer_feedback = 'very bad' THEN rating_value END) * 100/count(rating_value) AS very_bad,
+COUNT( CASE WHEN customer_feedback = 'okay' THEN rating_value END) * 100/count(rating_value) AS okay,
+COUNT( CASE WHEN customer_feedback = 'good' THEN rating_value END) * 100/count(rating_value) AS good,
+COUNT( CASE WHEN customer_feedback = 'bad' THEN rating_value END) * 100/count(rating_value) AS bad
+
+FROM count_rates
+GROUP BY 1;
+
+/* from first quarter to fourth quarter
+
+very good sentiments decrease by approx 20%
+good sentiments decrease by approx 18.7%
+very bad sentiments increase by approx 11.6%
+bad sentiments increase by approx 17.9%
+Hence this shows customers are getting dissatisfied over time   */
+
+
+-- ---------------------------------------------------------------------------------------------------------------------------------
+
+/*[Q4] Which are the top 5 vehicle makers preferred by the customer.
+
+Hint: For each vehicle make what is the count of the customers.*/
+
+SELECT
+	vehicle_maker,
+count(vehicle_maker)
+FROM veh_prod_cust_v
+GROUP BY 1
+ORDER BY 2 DESC;
+
+
+
+-- ---------------------------------------------------------------------------------------------------------------------------------
+
+/*[Q5] What is the most preferred vehicle make in each state?
+
+Hint: Use the window function RANK() to rank based on the count of customers for each state and vehicle maker.
+After ranking, take the vehicle maker whose rank is 1.*/
+
+SELECT
+	vehicle_maker,
+	state,
+	count(customer_id) as cust_counts
+FROM veh_prod_cust_v
+GROUP BY 2
+
+
+-- ---------------------------------------------------------------------------------------------------------------------------------
+
+/*QUESTIONS RELATED TO REVENUE and ORDERS
+
+-- [Q6] What is the trend of number of orders by quarters?
+
+Hint: Count the number of orders for each quarter.*/
+
+SELECT
+	quarter_number,
+count(order_id) AS q_total_orders
+	FROM veh_ord_cust_v
+GROUP BY quarter_number
+ORDER BY quarter_number ASC;
+
+
+-- ---------------------------------------------------------------------------------------------------------------------------------
+
+/* [Q7] What is the quarter over quarter % change in revenue?
+
+Hint: Quarter over Quarter percentage change in revenue means what is the change in revenue from the subsequent quarter to the previous quarter in percentage.
+To calculate you need to use the common table expression to find out the sum of revenue for each quarter.
+Then use that CTE along with the LAG function to calculate the QoQ percentage change in revenue.
+
+Note: For reference, refer to question number 5. Week-2: Hands-on (Practice)-GL_EATS_PRACTICE_EXERCISE_SOLUTION.SQL.
+You'll get an overview of how to use common table expressions and the LAG function from this question.*/
+
+WITH q_revenue AS
+(
+SELECT          -- revenue by order_id
+	order_id,
+quantity,
+discount,
+vehicle_price,
+quarter_number,
+quantity * discount * vehicle_price AS revenue
+FROM veh_ord_cust_v
+)
+
+SELECT
+	quarter_number,
+	SUM(revenue) AS revenue,
+	LAG(SUM(revenue)) OVER ( ORDER BY quarter_number) AS revenue_prev_q,
+	(SUM(revenue)- LAG(SUM(revenue)) OVER ( ORDER BY quarter_number))*100/SUM(revenue)  AS rev_difference
+FROM   q_revenue
+GROUP BY 1;
+
+-- ---------------------------------------------------------------------------------------------------------------------------------
+
+/* [Q8] What is the trend of revenue and orders by quarters?
+
+Hint: Find out the sum of revenue and count the number of orders for each quarter.*/
+
+SELECT
+	quarter_number,
+SUM(quantity * discount * vehicle_price) AS revenue,
+count(order_id) AS total_orders
+FROM veh_ord_cust_v
+GROUP BY 1;
+ORDER BY 1 ASC;
+
+
+
+-- ---------------------------------------------------------------------------------------------------------------------------------
+
+/* QUESTIONS RELATED TO SHIPPING
+[Q9] What is the average discount offered for different types of credit cards?
+
+Hint: Find out the average of discount for each credit card type.*/
+
+SELECT
+	credit_card_type,
+AVG(discount) AS avg_discount
+FROM veh_ord_cust_v
+GROUP BY 1
+ORDER BY 2 DESC;
+
+-- ---------------------------------------------------------------------------------------------------------------------------------
+
+/* [Q10] What is the average time taken to ship the placed orders for each quarters?
+Use days_to_ship_f function to compute the time taken to ship the orders.
+
+Hint: For each quarter, find out the average of the function that you created to calculate the difference between the ship date and the order date.*/
+
+
+SELECT
+	quarter_number,
+AVG(days_to_ship_f(ship_date , order_date)) AS  avg_duration
+FROM veh_ord_cust_v
+GROUP BY quarter_number
+ORDER BY quarter_number DESC;
+
+
+-- --------------------------------------------------------Done----------------------------------------------------------------------
+-- ----------------------------------------------------------------------------------------------------------------------------------
+
+
+
